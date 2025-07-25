@@ -1,43 +1,31 @@
 
-export TOOLS_DIR = makefunctions
-export SRC_DIR = src
-export BUILD_DIR = build
+export TOOLS = makefunctions
+export SRC = src
+export BUILD = build
+
+export SRC_BT = $(SRC)/bootloader
+
 ASM = nasm
 
-.PHONY: all floppy_image kernel bootloader clean always
+#LINK = ld
+#CC = gcc
+#CC_FL = -mx32 -nostdinc -ffreestanding
 
-#
-#	Floppy Image
-#
-floppy_image: ${BUILD_DIR}/main_floppy.img
+$(BUILD)/bootsector: $(SRC_BT)/bootsector.asm
+	$(ASM) -f bin $(SRC_BT)/bootsector.asm -o $(BUILD)/bootsector
 
-#create a disk image and truncate
-${BUILD_DIR}/main_floppy.img: kernel bootloader
-	cp ${BUILD_DIR}/main.bin ${BUILD_DIR}/main_floppy.img
-	truncate -s 1440k ${BUILD_DIR}/main_floppy.img
+$(BUILD)/kernel: $(SRC_BT)/kernel.asm
+	$(ASM) -f bin $(SRC_BT)/kernel.asm -o $(BUILD)/kernel
 
-#
-#	Bootloader
-#
-bootloader: ${BUILD_DIR}/bootloader.bin
+$(BUILD)/floppy.img: $(BUILD)/bootsector $(BUILD)/kernel
+#	add bootsector and kernel together
+	cat $(BUILD)/bootsector $(BUILD)/kernel > $(BUILD)/outputbin
 
-${BUILD_DIR}/bootloader.bin: always
-	${ASM} ${SCR_DIR}/bootloader/boot.asm -f bin -o ${BUILD_DIR}/bootloader.bin
+#	make floppy
+	truncate -s 1440k $(BUILD)/floppy.img
 
-#
-#	Kernel
-#
-kernel: ${BUILD_DIR}/kernel.bin
+	dd if=$(BUILD)/outputbin of=$(BUILD)/floppy.img
+	
 
-${BUILD_DIR}/kernel.bin: always
-	${ASM} ${SRC_DIR}/kernel/kernel.asm -f bin -o ${BUILD_DIR}/kernel.bin
-
-#
-#	Always
-#
-always:
-	mkdir -p ${BUILD_DIR}
-
-#Making clean safer in case build directory is bad
 clean:
-	${TOOLS_DIR}/safeclean.bash
+	rm -rf $(BUILD)/*
