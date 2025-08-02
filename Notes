@@ -1,0 +1,5 @@
+The kernel entry works but not the kernel
+(I know because I put a print function in the kernel entry and it worked)
+
+
+Alright, we're going to figure out how to read memory in protected mode
