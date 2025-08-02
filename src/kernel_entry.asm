@@ -1,5 +1,5 @@
 
-; video memory starts at 0xb8000
+; text video memory starts at 0xb8000
 ; first byte: character
 ; second byte: color
 
