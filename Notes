@@ -1,5 +1,6 @@
-The kernel entry works but not the kernel
-(I know because I put a print function in the kernel entry and it worked)
-
-
-Alright, we're going to figure out how to read memory in protected mode
+Notes for me:
+- No error checking/return values
+- verbose resetting of variables (thinking of making a generic handler)
+- no double buffer to avoid stutter later
+- no unit test system (I'll add that next I think, alongside error handling)
+- right now, everything is read into memory in real mode. Research this more and see if this framework makes sense or not...

@@ -6,7 +6,7 @@ export TOOLS = makefunctions
 export SRC = src
 export BUILD = build
 
-BUILD_REQ = $(BUILD)/bootsector $(BUILD)/sector2
+BUILD_REQ = $(BUILD)/bootsector $(BUILD)/kernel
 
 ASM = nasm
 
@@ -15,7 +15,7 @@ IMG = floppy.img
 
 $(BUILD)/%: $(SRC)/%.asm
 	$(ASM) -f bin $< -o $@
-	
+
 $(BUILD)/$(IMG): $(BUILD_REQ)
 	rm -f $(BUILD)/$(IMG_BIN)
 	cat $(BUILD_REQ) > $(BUILD)/$(IMG_BIN)

@@ -16,7 +16,7 @@ load_disk:
     mov bx, SECTOR2_OFFSET
 
     mov ah, 0x2 ; ah -> instruction
-    mov al, 2 ; al -> #of sectors to read
+    mov al, 4 ; al -> #of sectors to read
     mov ch, 0x0 ; cylinder 0
     mov cl, 0x2 ; sector 2
     mov dh, 0x0 ; dh -> head number

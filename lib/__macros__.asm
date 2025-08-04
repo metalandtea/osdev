@@ -6,11 +6,9 @@
 %define CSS 0x08 ;code segment selector
 %define DSS 0x10 ;data segment selector
 
-;Kernel Macros
-%define KERNEL_ORG 0x1000
-
 ;Video Macros
 %define MEM_VID_TEXT_START 0xb8000
+%define MEM_VID_TEXT_SIZE 0x4000
 
 ;Stack Macros (for kernel runtime)
 %define STACK_SIZE 0x4000

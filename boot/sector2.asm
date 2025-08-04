@@ -11,7 +11,4 @@ switch_to_32bit:
 
     jmp CODE_SEG:start_protected_mode
 
-%include "src/gdt.asm"
-%include "src/kernel_entry.asm"
-
 times 1024-($-$$) db 0
