@@ -10,7 +10,6 @@
 %define KERNEL_ORG 0x1000
 
 ;Video Macros
-
 %define MEM_VID_TEXT_START 0xb8000
 
 ;Stack Macros (for kernel runtime)
