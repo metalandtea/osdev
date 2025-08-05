@@ -9,6 +9,6 @@ switch_to_32bit:
     or eax, 1
     mov cr0, eax
 
-    jmp CODE_SEG:start_protected_mode
+    jmp CSS:start_protected_mode
 
 times 1024-($-$$) db 0

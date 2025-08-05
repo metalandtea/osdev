@@ -7,27 +7,19 @@
 %include "boot/kernel_entry.asm"
 
 ;OS library files
-%include "lib/videomem.asm"
+%include "lib/textdriver.asm"
+%include "lib/mem-lib.asm"
 
-mystring1: db "Hello, World!", 0
-mystring2: db "This is my new and awesome OS!", 0
-mystring3: db "It's pretty cool!", 0
+mystring: db "Hello, World!", 0
+my_mem_test: db "H", 0x07, "i", 0x07
 
 kernel:
-    call flush
-
-    mov esi, mystring1
-    call puts
-    call putnl
-
-    mov esi, mystring2
-    call puts
-    call putnl
-
-    mov esi, mystring3
-    call puts
-
-    jmp exit
+    flush
+    memcpy my_mem_test, 0xb8000, 4
+    putnl
+    puts mystring
+    
+    
 
 exit:
     cli

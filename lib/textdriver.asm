@@ -1,16 +1,21 @@
 ;
 ;   Dependencies:
-;       __macros__.asm
+;           __macros__: for general System V ABI compliant macros
 ;
 
-SECTION .data:
-    text_cursor dd 0x0
-    terminal_color db 0x02
 
-    terminal_width dd 0xA0
+; -- macros -- ;
+%define MEM_VID_TEXT_START 0xb8000
+%define MEM_VID_TEXT_SIZE 0x4000
 
+; -- data -- ;
+text_cursor dd 0x0
+terminal_color db 0x02
 
-SECTION .code:
+terminal_width dd 0xA0 ;160
+
+; -- functions -- ;
+
 ;
 ;   puts: puts a string to the monitor
 ;       in: esi -> string to point to with null terminator
@@ -18,8 +23,38 @@ SECTION .code:
 ;           terminal_color -> background color bit | text color bit 
 ;       out:
 ;           text_cursor <- new starting location at end of string
+;           
+%macro puts 1
+    PUSH_PRESERVED
+    mov esi, %1
+    call __internal__puts
+    POP_PRESERVED
+%endmacro
+
 ;
-puts:
+;   putnl: puts a new line onto screen
+;       in: 
+;           text_cursor -> the current position of the cursor
+;           terminal_width -> the width of the terminal
+;       out:
+;           next_cursor <- the new position
+;
+%macro putnl 0
+    PUSH_PRESERVED
+    call __internal__putnl
+    POP_PRESERVED
+%endmacro
+
+;
+;   flush: flushes the text memory
+;
+%macro flush 0
+    PUSH_PRESERVED
+    call __internal__flush
+    POP_PRESERVED
+%endmacro
+
+__internal__puts:
 .start:
     mov ah, [terminal_color]
     mov ebx, [text_cursor] ; resgister for text cursor flow
@@ -32,21 +67,16 @@ puts:
     je .done
 
     ;put to screen
-    mov [edi+ebx], ax; write to memory
+    mov [edi+ebx], ax ; write to memory
     add ebx, 2 ; add two to the address
     jmp .lp
 .done:
     mov [text_cursor], ebx ; set the new offset
-    
-    ;reset and clear everything
     xor ax, ax
-    xor ebx, ebx
     ret 
 
-;
-;   flush: flushes the text memory
-;
-flush:
+__internal__flush:
+
 .start:
     mov edi, MEM_VID_TEXT_START
     xor ecx, ecx ;to increment stuff (we're going to write 4000 bytes)
@@ -56,20 +86,11 @@ flush:
     cmp ecx, MEM_VID_TEXT_SIZE
     jl .lp
     jmp .done
-
 .done:
     xor ecx, ecx
     ret
 
-;
-;   putnl: puts a new line onto screen
-;       in: 
-;           text_cursor -> the current position of the cursor
-;           terminal_width -> the width of the terminal
-;       out:
-;           next_cursor <- the new position
-;
-putnl:
+__internal__putnl:
 .start:
     ;get the difference between the column number
     ;and the current number
@@ -86,14 +107,8 @@ putnl:
     mov ecx, [terminal_width]
     sub ecx, edx
 
-    add eax, ecx 
+    add eax, ecx
 
     mov [text_cursor], eax ;set new text cursor
-    jmp .done    
 .done:
-    ;clean up everything
-    xor eax, eax
-    xor ebx, ebx
-    xor ecx, ecx
-    xor edx, edx
     ret

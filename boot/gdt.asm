@@ -28,5 +28,5 @@ GDT_descriptor:
     dw GDT_end - GDT_start - 1  ; size
     dd GDT_start                ; start
 
-CODE_SEG equ GDT_code_descriptor - GDT_start
-DATA_SEG equ GDT_data_descriptor - GDT_start
+CSS equ GDT_code_descriptor - GDT_start
+DSS equ GDT_data_descriptor - GDT_start
