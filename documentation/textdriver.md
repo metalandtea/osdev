@@ -16,18 +16,28 @@ Puts a character to video memory.
 
 #### in:
 stack <- x value of cursor
+
 stack <- y value of cursor
+
 stack <- character to print
+
 #### out:
 #### scratch:
+
 ax <- 0x0 | terminal_color
+
 eax <- ax | (GARBAGE)
+
 ecx <- the absolute cursor position
 
 ### puts x, y, source, size
 Puts a string to video memory.
+
 #### in:
 stack <- x value of cursor start
+
 stack <- y value of cursor start
+
 stack <- address of string
+
 stack <- size of string (in bytes)
