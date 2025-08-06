@@ -16,9 +16,8 @@ my_mem_test: db "H", 0x07, "i"
 
 kernel:
     clearScreen
-    puts 0, 0, mystring, 13
-
-    mov [terminal_color], BYTE 0x02
+    putc 0, 0, 'A'
+    puts 0, 1, mystring, 13
 exit:
     cli
     hlt

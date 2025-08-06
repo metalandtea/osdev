@@ -9,18 +9,18 @@
 
 ; -- data -- ;
 text_cursor dd 0x0
-terminal_color db 0x72
+terminal_color db 0x02
 
 terminal_width dd 0xA0 ;80
 ; -- functions -- ;
 
 ;
-;   putc:
-;       in:
-;
+;   putc x, y, c
 ;
 %macro putc 3
-    
+    push %1
+    push %2
+    push %3 
     call __internal__putc
 %endmacro
  
@@ -106,11 +106,10 @@ SFRAME
 .start:
     mov edi, MEM_VID_TEXT_START
     xor ecx, ecx
+    mov al, 0x0
+    mov ah, BYTE [terminal_color]
 .lp:
-    mov BYTE [edi+ecx], 0x0
-    inc ecx
-    mov dl, BYTE [terminal_color]
-    mov BYTE [edi+ecx], dl
+    mov [edi+ecx], ax
     inc ecx
     cmp ecx, MEM_VID_TEXT_SIZE
     jl .lp

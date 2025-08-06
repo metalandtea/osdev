@@ -20,7 +20,7 @@ Scratch Registers:
 - edx
 
 ## Stack Behavior
-The stack pushes arguments right to left, then pushes the instruction pointer and the base pointer, setting the new base pointer.
+The stack pushes arguments left to right, then pushes the instruction pointer and the base pointer, setting the new base pointer.
 
 At the end of the functions, the stack pops eip, ebp then pops every argument with ret n (similar to Microsoft ABI).
 
