@@ -5,20 +5,25 @@
 ;Stack Macros (for kernel runtime)
 %define STACK_SIZE 0x4000
 %define STACK_TOP 0x90000 ;MAKE SURE THIS IS 16 BYTE ALIGNED
+%define ARG_SIZE 4
 
 ;general macros
-%macro PUSH_PRESERVED 0
-    push ebx
-    push esi
-    push edi
+%macro SFRAME 0
     push ebp
-    push esp
+    mov ebp, esp
+
+    ;store reserved stuff
+    push ebx
+    push edi
+    push esi
 %endmacro
 
-%macro POP_PRESERVED 0
-    pop esp
-    pop ebp
-    pop edi
+%macro SFRAME_END 1
     pop esi
+    pop edi
     pop ebx
+    pop ebp
+
+    %assign __ret__bytes %1 * ARG_SIZE 
+    ret __ret__bytes
 %endmacro

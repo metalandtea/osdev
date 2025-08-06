@@ -10,17 +10,15 @@
 %include "lib/textdriver.asm"
 %include "lib/mem-lib.asm"
 
-mystring: db "Hello, World!", 0
-my_mem_test: db "H", 0x07, "i", 0x07
+mystring: db "Hello, World!"
+myotherstring: db "Beans"
+my_mem_test: db "H", 0x07, "i"
 
 kernel:
-    flush
-    memcpy my_mem_test, 0xb8000, 4
-    putnl
-    puts mystring
-    
-    
+    clearScreen
+    puts 0, 0, mystring, 13
 
+    mov [terminal_color], BYTE 0x02
 exit:
     cli
     hlt
