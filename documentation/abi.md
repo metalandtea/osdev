@@ -26,7 +26,7 @@ At the end of the functions, the stack pops eip, ebp then pops every argument wi
 
 routines and subroutines for the kernel start with a lowercase letter (ex: myRoutine) These should only ever be exposed to the kernel. User functions will always be set up to use the stack, and are displayed with a capital first letter in code (ex MyUserRoutine). Userland code should be sanitized and checked, and should not be trusted (though I'm not sure if I'm going to be doing much userland code right now, haha).
 
-kernel routines will avoid the stack (beyond preserving registers through SFRAME and SFRAME_END) unless necessary, in the case of which thorough documentation should be provided.
+kernel routines do not have to pass arguments to the stack (beyond preserving registers through SFRAME and SFRAME_END)
 
 Note: Kernel routines must still preserve the preserved registers, but they do not have to follow the argument behavior provided. Registers can be direcly written to and used without reading first from the stack.
 
@@ -35,4 +35,4 @@ Note: Kernel routines must still preserve the preserved registers, but they do n
 Where applicable, these registers should handle each type of return value:
 
 error flag -> al (0 on success, # for error)
-
+count -> cx, ecx, dx (extra)

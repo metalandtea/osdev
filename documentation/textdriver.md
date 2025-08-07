@@ -41,3 +41,9 @@ stack <- y value of cursor start
 stack <- address of string
 
 stack <- size of string (in bytes)
+
+### csr_write source
+writes a null terminated string to the cursor.
+
+### csr_move x, y
+moves the cursor to an x, y position in the terminal

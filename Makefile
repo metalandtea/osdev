@@ -10,7 +10,7 @@ BUILD_REQ = $(BUILD)/bootsector $(BUILD)/kernel
 
 ASM = nasm
 
-IMG_BIN = output 
+IMG_BIN = output
 IMG = floppy.img
 
 $(BUILD)/%: $(SRC)/%.asm

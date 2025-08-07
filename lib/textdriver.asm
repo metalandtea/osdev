@@ -1,6 +1,6 @@
 ;
 ;   Dependencies:
-;           __macros__: for general ABI compliance
+;           __macros__: for ABI compliance
 ;
 
 ; -- macros -- ;
@@ -8,7 +8,9 @@
 %define MEM_VID_TEXT_SIZE 0x2000
 
 ; -- data -- ;
-text_cursor dd 0x0
+text_cursor_x dd 0x0
+text_cursor_y dd 0x0
+
 terminal_color db 0x02
 
 terminal_width dd 0xA0 ;80
@@ -65,6 +67,7 @@ SFRAME_END 3
 __internal__puts:
 SFRAME
 .start:
+    xor ecx, ecx
     mov ecx, [ebp + 8] ; size
     mov esi, [ebp + 12] ; source string
     
@@ -116,3 +119,92 @@ SFRAME
     jmp .done
 .done:
 SFRAME_END 0
+
+;
+;   strlen string_source
+;
+%macro strlen 1
+    push %1
+    call __internal__strlen
+%endmacro
+
+__internal__strlen:
+SFRAME
+.start:
+    xor ecx, ecx
+    mov esi, [ebp + 8] ; string source
+
+    jmp .lp
+.lp:
+    lodsb
+    cmp al, 0
+    je .done
+
+    inc ecx
+    jmp .lp
+.done:
+SFRAME_END 1
+
+;
+;   csr_write: string
+;       mem use:
+;           text_cursor_x
+;           text_cursor_y
+;
+%macro csr_write 1
+    push %1
+    call __internal__csr_write
+%endmacro
+
+__internal__csr_write:
+SFRAME
+.start:
+    mov esi, [ebp + 8]
+    strlen esi ;get length of string
+
+    mov ebx, ecx ;store to update cursor later
+    puts DWORD [text_cursor_x], DWORD [text_cursor_y], esi, ecx
+
+    add [text_cursor_x], ebx
+
+    ; wrap if text_cursor_x is greater than terminal_width
+    mov eax, [text_cursor_x]
+    mov edx, [text_cursor_y]
+
+    cmp eax, [terminal_width]
+    jge .newline
+    jmp .done
+    
+.newline:
+    add edx, 1
+    mov [text_cursor_y], edx
+
+    xor eax, eax
+    mov [text_cursor_x], eax       
+.done:
+SFRAME_END 1
+
+;
+;   csr_move x, y
+;
+%macro csr_move 2
+    push %1
+    push %2
+    call __internal__csr_move
+%endmacro
+
+__internal__csr_move:
+SFRAME
+.start:
+    mov eax, [ebp + 12] ; x
+    mov edx, [ebp + 8] ; y
+    
+    cmp eax, [terminal_width]
+    jl .done
+.newline:
+    xor eax, eax
+    add edx, 1
+.done:
+    mov [text_cursor_x], eax
+    mov [text_cursor_y], edx
+SFRAME_END 2
