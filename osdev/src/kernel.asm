@@ -14,15 +14,14 @@
 mystring: db "Hello, world!", 0
 
 kernel:
-    ;set up everything
-    setEntryOffset 0x20, serial_entry
-    lidt [IDT_descriptor]
+    ;setup
+    call addIDTGates
 
-    mov ah, 0x00
+    mov ah, 0x00 ; serialStart
     int 0x20
 
-    mov ah, 0x02
-    mov esi, mystring
+    mov ah, 0x02 ; serialWrite
+    mov esi, mystring ; string to write
     int 0x20
 exit:
     cli

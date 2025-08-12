@@ -46,3 +46,11 @@ IDT_end:
 IDT_descriptor:
     dw IDT_end - IDT_start - 1 ;size
     dd IDT_start
+
+addIDTGates:
+    ;set up everything
+    setEntryOffset 0x20, serialdriver_entry
+    ;setEntryOffset 0x22, textdriver_entry
+
+    lidt [IDT_descriptor]
+    ret

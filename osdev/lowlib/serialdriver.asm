@@ -91,11 +91,11 @@ serialWrite:
 ;           
 ;       0x02: serialWrite
 ;
-serial_entry:
+serialdriver_entry:
 .start:
     pushad
     cmp ah, 0x00
-    je .init
+    je .serialStart
     
     cmp ah, 0x01
     je .putc
@@ -105,7 +105,7 @@ serial_entry:
 
     jmp .done
 ;--child functions --;
-.init:
+.serialStart:
     call serialStart
     jmp .done
 .putc:

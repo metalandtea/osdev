@@ -4,7 +4,7 @@
 The Serial Driver is used to write to the COM1 port of the machine, located at address `0x3F8`. It does not support read functions, as it is used with the Qemu `-serial` flag. It is purely used for debugging purposes.
 ### General Details
 - Operating mode: Protected Mode
-- Ring Access: Ring 
+- Ring Access: Ring 0
 - Interrupt number: 0x20
 ### Relevant Details
 - UART type assumed: 16550

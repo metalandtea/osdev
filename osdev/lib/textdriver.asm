@@ -3,6 +3,8 @@
 ;           __macros__: for ABI compliance
 ;
 
+; NOTE: sizes are measured in characters (bytes/2)
+
 ; -- macros -- ;
 %define MEM_VID_TEXT_START 0xb8000
 %define MEM_VID_TEXT_SIZE 0x2000
@@ -12,7 +14,6 @@ text_cursor_x dd 0x0
 text_cursor_y dd 0x0
 
 terminal_color db 0x02
-
 terminal_width dd 0x50 ;80
 ; -- functions -- ;
 
