@@ -1,5 +1,5 @@
-
-;   Dependenciear
+;
+;   Dependencies
 ;           __macros__: for ABI compliance
 ;
 

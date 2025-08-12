@@ -1,23 +1,23 @@
 ;
-;   %1 -> offset (entry) [16 bits]
-;   %2 -> segment selector (GDT) [16 bits]
-;       ring 0
-;       gate size 32
-;   
-%macro IDT_int_0_32 2 
-    dw %1 & 0xFFFF ;first 16 bits of entry
-    db 0x8E ; magic number (see intel)
-    db 0x0 ;0s and res
-    dw %2 ;segment selector
-    dw (%1 >> 32) & 0xFFFF ;last 16 bits of entry
+;   setEntryOffset <entry_num> <offset> 
+;      note: make sure that <entry_num> is valid in the IDT
+;       (if it's not it'll triple fault
+%macro setEntryOffset 2
+    pushad
+    ;get position from entry_num
+    mov ebx, IDT_start
+
+    mov ecx, %1
+    lea ebx, [ebx + ecx*8]
+
+    mov eax, %2
+    mov WORD [ebx + interrupt_entry.offset_low], ax
+
+    shr eax, 16
+    mov WORD [ebx + interrupt_entry.offset_high], ax
+    popad
 %endmacro
 
-;
-;   %1 -> offset
-;   %2 -> segment selector
-;       ring 0
-;       gate size 32
-;
 struc interrupt_entry
     .offset_low: resw 1
     .selector: resw 1
@@ -38,7 +38,9 @@ endstruc
 
 align 4
 IDT_start:
-    idt_entry_0: initEntry 
+    %rep 256
+        initEntry
+    %endrep
 IDT_end:
 
 IDT_descriptor:
