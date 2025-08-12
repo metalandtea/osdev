@@ -1,10 +1,4 @@
+
 Notes for me:
-- No error checking/return values
-- verbose resetting of variables (thinking of making a generic handler)
-- no double buffer to avoid stutter later
-- no unit test system (I'll add that next I think, alongside error handling)
-- right now, everything is read into memory in real mode. Research this more and see if this framework makes sense or not...
-
-NOTES AGAIN:
-
-We're going to try to follow the System V ABI. Hopefully, it shouldn't be difficult.
+- Start working on the IDT before doing anything else
+- then implement some basic error handling.

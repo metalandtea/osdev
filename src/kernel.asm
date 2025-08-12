@@ -8,17 +8,24 @@
 
 ;OS library files
 %include "lib/textdriver.asm"
-%include "lib/mem-lib.asm"
+%include "lib/idt.asm"
 
-mystring: db "Hello, World! ", 0
-myotherstring: db "Beans", 0
+int_1_jmp:
+    mov BYTE [0xb8000], 'A'
+    iret
 
 kernel:
-    clearScreen
-    csr_write mystring
-    csr_move 2, 1
-    csr_write myotherstring
+    mov eax, int_1_jmp
+    mov WORD [idt_entry_0 + interrupt_entry.offset_low], ax
+
+    shr eax, 16
+    mov WORD [idt_entry_0 + interrupt_entry.offset_high], ax
+    lidt [IDT_descriptor]
+
+    pushad
+    int 0x0
+    popad
 exit:
     cli
     hlt
-    jmp exit
+    jmp $

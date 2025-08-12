@@ -1,5 +1,5 @@
-;
-;   Dependencies:
+
+;   Dependenciear
 ;           __macros__: for ABI compliance
 ;
 
@@ -13,7 +13,7 @@ text_cursor_y dd 0x0
 
 terminal_color db 0x02
 
-terminal_width dd 0xA0 ;80
+terminal_width dd 0x50 ;80
 ; -- functions -- ;
 
 ;
@@ -98,13 +98,13 @@ SFRAME
 SFRAME_END 4
 
 ;
-;   clearScreen
+;   clear_screen
 ;
-%macro clearScreen 0
-    call __internal__clearScreen
+%macro clear_screen 0
+    call __internal__clear_screen
 %endmacro
 
-__internal__clearScreen:
+__internal__clear_screen:
 SFRAME
 .start:
     mov edi, MEM_VID_TEXT_START
@@ -208,3 +208,31 @@ SFRAME
     mov [text_cursor_x], eax
     mov [text_cursor_y], edx
 SFRAME_END 2
+
+;
+;   csr_inc
+;
+%macro csr_inc 0
+    call __internal__csr_inc
+%endmacro
+
+__internal__csr_inc:
+SFRAME
+.start:
+    mov eax, [text_cursor_x]
+    inc eax
+
+    cmp eax, [terminal_width]
+    jl .done
+.newline:
+    mov edx, [text_cursor_y]
+    inc edx
+    xor eax, eax
+.done:
+    mov [text_cursor_x], eax
+    mov [text_cursor_y], edx
+SFRAME_END 0
+
+;
+;   csr_dec
+;
